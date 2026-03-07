@@ -1,0 +1,533 @@
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+from sqlalchemy.orm import Session
+from typing import List, Optional
+
+from ..database import get_db
+from ..models import Article, Job
+from ..schemas import ArticleResponse, ArticleListResponse, ArticleCreate
+from ..config import settings
+from .. import scheduler_manager
+
+router = APIRouter(prefix="/articles", tags=["Articles"])
+
+
+@router.get("", response_model=List[ArticleListResponse])
+def list_articles(
+    skip: int = 0,
+    limit: int = 50,
+    status: Optional[str] = None,
+    db: Session = Depends(get_db),
+):
+    q = db.query(Article)
+    if status:
+        q = q.filter(Article.status == status)
+    return q.order_by(Article.created_at.desc()).offset(skip).limit(limit).all()
+
+
+@router.get("/{article_id}", response_model=ArticleResponse)
+def get_article(article_id: int, db: Session = Depends(get_db)):
+    article = db.query(Article).filter(Article.id == article_id).first()
+    if not article:
+        raise HTTPException(status_code=404, detail="Article not found")
+    return article
+
+
+@router.post("/generate", status_code=202)
+async def generate_article(
+    payload: ArticleCreate,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
+):
+    """Trigger manual article generation (runs in background)."""
+    await scheduler_manager.trigger_now(db_url=settings.DATABASE_URL)
+    return {"message": "Article generation started", "status": "generating"}
+
+
+@router.delete("/{article_id}", status_code=204)
+def delete_article(article_id: int, db: Session = Depends(get_db)):
+    article = db.query(Article).filter(Article.id == article_id).first()
+    if not article:
+        raise HTTPException(status_code=404, detail="Article not found")
+    db.delete(article)
+    db.commit()
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Email Marketing Intelligence — Articles</title>
+  <meta name="description" content="Expert articles on email deliverability, authentication, analytics, and strategy." />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ink: #1a1a2e;
+      --ink-mid: #3a3a5c;
+      --ink-light: #5a5a7a;
+      --accent: #e85d26;
+      --accent-soft: #fff1eb;
+      --rule: #e8e4df;
+      --bg: #faf9f7;
+      --white: #ffffff;
+      --max: 900px;
+    }
+    html { font-size: 18px; scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Header */
+    .site-header {
+      background: var(--ink);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .site-header .logo {
+      font-family: 'Lora', serif;
+      font-size: 0.82rem;
+      color: #fff;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      opacity: 0.65;
+    }
+    .site-header .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* Hero */
+    .hero {
+      background: var(--ink);
+      padding: 72px 24px 64px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 110%, rgba(232,93,38,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero h1 {
+      font-family: 'Lora', serif;
+      font-size: clamp(1.65rem, 4vw, 2.5rem);
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.25;
+      max-width: 680px;
+      margin: 0 auto 20px;
+    }
+    .hero .deck {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.58);
+      max-width: 540px;
+      margin: 0 auto 36px;
+      line-height: 1.65;
+    }
+    .hero .stat-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 36px;
+      margin-top: 10px;
+    }
+    .hero .stat {
+      text-align: center;
+    }
+    .hero .stat .num {
+      font-family: 'Lora', serif;
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .hero .stat .lbl {
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.38);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 4px;
+    }
+
+    /* Content */
+    .content-wrap {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* Filter bar */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 36px;
+      flex-wrap: wrap;
+    }
+    .filter-bar .search-box {
+      flex: 1;
+      min-width: 200px;
+      padding: 10px 16px;
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      background: var(--white);
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .filter-bar .search-box:focus {
+      border-color: var(--accent);
+    }
+    .filter-bar .search-box::placeholder {
+      color: var(--ink-light);
+    }
+    .sort-btn {
+      padding: 10px 16px;
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      background: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      color: var(--ink-mid);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .sort-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .sort-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    /* Article cards */
+    .article-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .article-card {
+      background: var(--white);
+      border: 1px solid var(--rule);
+      border-radius: 12px;
+      padding: 28px 28px 24px;
+      text-decoration: none;
+      display: block;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+    .article-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 20px rgba(232,93,38,0.08);
+      transform: translateY(-2px);
+    }
+    .article-card .card-tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-radius: 100px;
+      padding: 3px 10px;
+      margin-bottom: 12px;
+    }
+    .article-card h2 {
+      font-family: 'Lora', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.35;
+      margin: 0 0 10px;
+    }
+    .article-card h2::after { display: none; }
+    .article-card .card-desc {
+      font-size: 0.88rem;
+      color: var(--ink-light);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .article-card .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.72rem;
+      color: var(--ink-light);
+    }
+    .article-card .card-meta .sep {
+      opacity: 0.4;
+    }
+    .article-card .arrow {
+      position: absolute;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 32px;
+      height: 32px;
+      background: var(--bg);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: all 0.25s;
+    }
+    .article-card:hover .arrow {
+      opacity: 1;
+      background: var(--accent);
+    }
+    .article-card .arrow svg {
+      width: 14px;
+      height: 14px;
+      stroke: var(--ink-mid);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .article-card:hover .arrow svg {
+      stroke: #fff;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--ink-light);
+    }
+    .empty-state .icon {
+      font-size: 2.5rem;
+      margin-bottom: 16px;
+    }
+    .empty-state p {
+      font-size: 0.92rem;
+    }
+
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--ink-light);
+      font-size: 0.9rem;
+    }
+    .loading .spinner {
+      width: 28px;
+      height: 28px;
+      border: 3px solid var(--rule);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Footer */
+    .site-footer {
+      background: var(--ink);
+      text-align: center;
+      padding: 24px;
+      font-size: 0.73rem;
+      color: rgba(255,255,255,0.28);
+    }
+
+    @media (max-width: 540px) {
+      .article-card { padding: 20px; }
+      .article-card .arrow { display: none; }
+      .hero .stat-row { gap: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="dot"></div>
+    <span class="logo">Email Marketing Intelligence</span>
+  </header>
+
+  <section class="hero">
+    <h1>Email Marketing Intelligence</h1>
+    <p class="deck">Deep dives into deliverability, authentication, analytics, and strategy. New articles published every hour.</p>
+    <div class="stat-row">
+      <div class="stat">
+        <div class="num" id="article-count">—</div>
+        <div class="lbl">Articles</div>
+      </div>
+      <div class="stat">
+        <div class="num" id="topic-count">—</div>
+        <div class="lbl">Topics</div>
+      </div>
+      <div class="stat">
+        <div class="num">24/7</div>
+        <div class="lbl">AI-Written</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="content-wrap">
+    <div class="filter-bar">
+      <input type="text" class="search-box" id="search" placeholder="Search articles..." />
+      <button class="sort-btn active" id="sort-new" onclick="sortArticles('new')">Newest</button>
+      <button class="sort-btn" id="sort-old" onclick="sortArticles('old')">Oldest</button>
+    </div>
+
+    <div class="article-list" id="article-list">
+      <div class="loading">
+        <div class="spinner"></div>
+        Loading articles...
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">Email Marketing Intelligence &nbsp;&middot;&nbsp; Deliverability &amp; Strategy &nbsp;&middot;&nbsp; AI-Generated Content</footer>
+
+  <script>
+    let articles = [];
+    let currentSort = 'new';
+
+    // Parse article info from filename
+    // Format: Slug-Of-Title-YYYYMMDD-HHMMSS.html
+    function parseFilename(filename) {
+      const name = filename.replace('.html', '');
+      const match = name.match(/^(.+)-(\d{8})-(\d{6})$/);
+      if (!match) return null;
+
+      const slug = match[1];
+      const dateStr = match[2];
+      const timeStr = match[3];
+
+      const title = slug.replace(/-/g, ' ');
+      const year = dateStr.slice(0, 4);
+      const month = dateStr.slice(4, 6);
+      const day = dateStr.slice(6, 8);
+      const hour = timeStr.slice(0, 2);
+      const min = timeStr.slice(2, 4);
+
+      const date = new Date(`${year}-${month}-${day}T${hour}:${min}:00`);
+
+      // Guess category from keywords in title
+      const titleLower = title.toLowerCase();
+      let category = 'Strategy';
+      if (titleLower.includes('deliverability') || titleLower.includes('inbox') || titleLower.includes('reputation') || titleLower.includes('bounce')) category = 'Deliverability';
+      else if (titleLower.includes('spf') || titleLower.includes('dkim') || titleLower.includes('dmarc') || titleLower.includes('bimi') || titleLower.includes('auth')) category = 'Authentication';
+      else if (titleLower.includes('dark mode') || titleLower.includes('outlook') || titleLower.includes('render') || titleLower.includes('css') || titleLower.includes('design')) category = 'Content & Rendering';
+      else if (titleLower.includes('gdpr') || titleLower.includes('can-spam') || titleLower.includes('compliance') || titleLower.includes('unsubscribe') || titleLower.includes('phishing')) category = 'Compliance';
+      else if (titleLower.includes('analytics') || titleLower.includes('metric') || titleLower.includes('tracking') || titleLower.includes('open rate') || titleLower.includes('click')) category = 'Analytics';
+      else if (titleLower.includes('list') || titleLower.includes('subscriber') || titleLower.includes('segment') || titleLower.includes('opt-in') || titleLower.includes('engagement')) category = 'List Management';
+      else if (titleLower.includes('webhook') || titleLower.includes('queue') || titleLower.includes('feedback loop') || titleLower.includes('infrastructure') || titleLower.includes('api')) category = 'Infrastructure';
+      else if (titleLower.includes('welcome') || titleLower.includes('frequency') || titleLower.includes('a/b') || titleLower.includes('subject line') || titleLower.includes('sequence')) category = 'Strategy';
+
+      const readTime = Math.floor(Math.random() * 4) + 5;
+
+      return {
+        filename,
+        title,
+        category,
+        date,
+        dateStr: `${day}/${month}/${year}`,
+        readTime: `${readTime} min read`,
+        url: `articles/${filename}`
+      };
+    }
+
+    function formatDate(date) {
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+    }
+
+    function renderArticles(list) {
+      const container = document.getElementById('article-list');
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="icon">&#128270;</div>
+            <p>No articles found matching your search.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(a => `
+        <a href="${a.url}" class="article-card">
+          <span class="card-tag">${a.category}</span>
+          <h2>${a.title}</h2>
+          <div class="card-meta">
+            <span>${formatDate(a.date)}</span>
+            <span class="sep">&middot;</span>
+            <span>${a.readTime}</span>
+            <span class="sep">&middot;</span>
+            <span>${a.category}</span>
+          </div>
+          <div class="arrow">
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </a>
+      `).join('');
+    }
+
+    function sortArticles(order) {
+      currentSort = order;
+      document.getElementById('sort-new').classList.toggle('active', order === 'new');
+      document.getElementById('sort-old').classList.toggle('active', order === 'old');
+
+      const sorted = [...articles].sort((a, b) =>
+        order === 'new' ? b.date - a.date : a.date - b.date
+      );
+
+      const query = document.getElementById('search').value.toLowerCase();
+      const filtered = query
+        ? sorted.filter(a => a.title.toLowerCase().includes(query) || a.category.toLowerCase().includes(query))
+        : sorted;
+
+      renderArticles(filtered);
+    }
+
+    document.getElementById('search').addEventListener('input', () => sortArticles(currentSort));
+
+    // Fetch article list from GitHub API
+    async function loadArticles() {
+      try {
+        const resp = await fetch('https://api.github.com/repos/chatgptkrylor/ai-artical-pages/contents/articles');
+        const files = await resp.json();
+
+        articles = files
+          .filter(f => f.name.endsWith('.html'))
+          .map(f => parseFilename(f.name))
+          .filter(Boolean);
+
+        document.getElementById('article-count').textContent = articles.length;
+
+        const categories = new Set(articles.map(a => a.category));
+        document.getElementById('topic-count').textContent = categories.size;
+
+        sortArticles('new');
+      } catch (err) {
+        document.getElementById('article-list').innerHTML = `
+          <div class="empty-state">
+            <div class="icon">&#9888;&#65039;</div>
+            <p>Could not load articles. Please try again later.</p>
+          </div>
+        `;
+      }
+    }
+
+    loadArticles();
+  </script>
+
+</body>
+</html>
