@@ -12,6 +12,7 @@ BASE_URL="https://chatgptkrylor.github.io/ai-artical-pages/articles"
 git add -A
 git diff --cached --quiet && echo "Nothing to publish." && exit 0
 git commit -m "New article: $TITLE"
+git pull origin main --rebase --allow-unrelated-histories --no-edit 2>/dev/null
 git push origin main
 
 # Log the URL
