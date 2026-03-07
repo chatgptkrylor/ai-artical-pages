@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Hidden Cost of Shared IPs for Transactional Email</title>
+  <meta name="description" content="A practical look at how sharing IPs affects transactional deliverability, and how to measure and mitigate risk with concrete thresholds." />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ink: #1a1a2e;
+  --ink-mid: #3a3a5c;
+  --ink-light: #5a5a7a;
+  --accent: #e85d26;
+  --accent-soft: #fff1eb;
+  --rule: #e8e4df;
+  --bg: #faf9f7;
+  --white: #ffffff;
+  --max: 740px;
+}
+html { font-size: 18px; scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+.site-header { background: var(--ink); padding: 14px 24px; display: flex; align-items: center; gap: 10px; }
+.site-header .logo { font-family: 'Lora', serif; font-size: 0.82rem; color: #fff; letter-spacing: 0.09em; text-transform: uppercase; opacity: 0.65; }
+.hero { background: var(--ink); padding: 72px 24px 64px; text-align: center; color: #fff; position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 110%, rgba(232,93,38,0.18) 0%, transparent 70%); pointer-events: none; }
+.hero .tag { display: inline-block; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); border: 1px solid rgba(232,93,38,0.4); border-radius: 100px; padding: 5px 14px; margin-bottom: 28px; }
+.hero h1 { font-family: 'Lora', serif; font-size: clamp(1.65rem, 4vw, 2.5rem); font-weight: 600; color: #fff; line-height: 1.25; max-width: 680px; margin: 0 auto 20px; }
+.hero .deck { font-size: 1rem; color: rgba(255,255,255,0.58); max-width: 540px; margin: 0 auto 36px; line-height: 1.65; }
+.hero .meta { display: flex; align-items: center; justify-content: center; gap: 18px; font-size: 0.76rem; color: rgba(255,255,255,0.38); }
+.article-wrap { max-width: var(--max); margin: 0 auto; padding: 56px 24px 80px; }
+.lead { font-family: 'Lora', serif; font-size: 1.12rem; line-height: 1.82; color: var(--ink-light); border-left: 3px solid var(--accent); padding-left: 20px; margin-bottom: 48px; }
+h2 { font-family: 'Lora', serif; font-size: 1.38rem; font-weight: 600; color: var(--ink); margin: 52px 0 16px; }
+h2::after { content: ''; display: block; width: 34px; height: 2px; background: var(--accent); margin-top: 10px; }
+p { margin-bottom: 22px; color: var(--ink-mid); }
+.pullquote { background: var(--accent-soft); border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; padding: 22px 28px; margin: 36px 0; font-family: 'Lora', serif; font-style: italic; font-size: 1.04rem; color: #7a3010; line-height: 1.72; }
+.callout { background: #f0f4ff; border: 1px solid #c8d5f5; border-radius: 10px; padding: 22px 26px; margin: 32px 0; }
+.callout .callout-label { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.13em; color: #3a5ad9; margin-bottom: 10px; }
+.callout p { font-size: 0.92rem; color: #2a3a6e; margin: 0; line-height: 1.65; }
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 32px 0; }
+@media (max-width: 540px) { .metrics { grid-template-columns: 1fr; } }
+.metric-card { background: var(--white); border: 1px solid var(--rule); border-radius: 10px; padding: 20px 18px; text-align: center; }
+.metric-card .value { font-family: 'Lora', serif; font-size: 1.85rem; font-weight: 600; color: var(--accent); line-height: 1; margin-bottom: 6px; }
+.metric-card .label { font-size: 0.76rem; color: var(--ink-light); line-height: 1.4; }
+.checklist { list-style: none; margin: 20px 0 28px; padding: 0; }
+.checklist li { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--rule); font-size: 0.94rem; color: var(--ink-mid); line-height: 1.6; }
+.checklist li:last-child { border-bottom: none; }
+.checklist li::before { content: '\2713'; flex-shrink: 0; width: 22px; height: 22px; background: var(--accent); color: #fff; border-radius: 50%; font-size: 0.63rem; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+.stages { counter-reset: stage; list-style: none; margin: 20px 0 28px; padding: 0; }
+.stages li { counter-increment: stage; display: flex; align-items: flex-start; gap: 18px; padding: 18px 0; border-bottom: 1px solid var(--rule); }
+.stages li:last-child { border-bottom: none; }
+.stages li::before { content: counter(stage); flex-shrink: 0; width: 32px; height: 32px; background: var(--ink); color: #fff; font-size: 0.8rem; font-weight: 600; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 28px 0; }
+@media (max-width: 480px) { .compare { grid-template-columns: 1fr; } }
+.compare-col { background: var(--white); border: 1px solid var(--rule); border-radius: 10px; padding: 20px 18px; }
+.compare-col .col-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; color: var(--accent); }
+.compare-col p { font-size: 0.88rem; color: var(--ink-mid); margin: 0; line-height: 1.6; }
+.article-img { width: 100%; border-radius: 10px; display: block; margin: 36px 0; object-fit: cover; max-height: 380px; background: #e8e4df; }
+hr.divider { border: none; border-top: 1px solid var(--rule); margin: 48px 0; }
+.closing { background: var(--ink); color: #fff; border-radius: 14px; padding: 40px 36px; margin-top: 56px; text-align: center; }
+.closing h2 { font-family: 'Lora', serif; font-size: 1.35rem; color: #fff; margin: 0 0 14px; }
+.closing h2::after { background: var(--accent); margin: 10px auto 0; }
+.closing p { font-size: 0.94rem; color: rgba(255,255,255,0.58); max-width: 460px; margin: 0 auto; line-height: 1.7; }
+.site-footer { background: var(--ink); text-align: center; padding: 24px; font-size: 0.73rem; color: rgba(255,255,255,0.28); }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="dot"></div>
+    <span class="logo">Email Marketing Intelligence</span>
+  </header>
+  <section class="hero">
+    <div class="tag">Deliverability · Architecture</div>
+    <h1>The Hidden Cost of Shared IPs for Transactional Email</h1>
+    <p class="deck">A practical field guide to understanding how sharing IPs can quietly throttle deliverability, when it matters most for transactional messages, and how to mitigate risk with concrete thresholds and rules of thumb.</p>
+    <div class="meta"><span>Email Marketing</span><span class="sep">·</span><span>8 min read</span><span class="sep">·</span><span>Guide</span></div>
+  </section>
+  <article class="article-wrap">
+    <p class="lead">If you rely on transactional emails to drive trust and conversions, you already know deliverability is everything. When you share an IP with other senders, you’re effectively placing your reputation in a shared mailbox. A few bad senders can drag the rest down, and the effect compounds as volumes scale. This article lays out the practical cost you can’t ignore and the guardrails that keep it affordable.</p>
+
+    <!-- Lead image would go here -->
+
+    <h2>Why shared IPs hurt transactional deliverability more than marketing sends</h2>
+    <p>Transactional emails behave differently from promotional campaigns. They arrive in real-time, and their engagement signals are comparatively sparse. When multiple senders share an IP, ISPs evaluate reputation based on the aggregated behavior: open rates, complaint rates, and bounce frequency. A single misbehaving sender can increase the baseline risk, forcing stricter throttling or even temporary blocks for everyone on the pool.</p>
+    <p>Concrete reality check: in a mixed pool, a sustained 0.5% complaint rate by one sender can push the entire IP’s reputation down, leading to a 5–15% drop in inboxing for all traffic over a 30-day window. That drop compounds with higher sending volumes because the system recalibrates thresholds upward for safety, not for performance.</p>
+
+    <div class="metrics">
+      <div class="metric-card"><div class="value">0.5%</div><div class="label">max accepted complaint rate to avoid throttling (typical)</div></div>
+      <div class="metric-card"><div class="value">3–7 days</div><div class="label">time to observe first reputational impact</div></div>
+      <div class="metric-card"><div class="value">+12%</div><div class="label">possible inbox drop when pool reputation falls</div></div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">Key Insight</div>
+      <p>Shared IPs are not a cost saver; they’re a risk amplifier for transactional email, where every message matters for the customer experience and lifetime value.</p>
+    </div>
+
+    <h2>Guidelines to safely use shared IPs — or move away from them</h2>
+    <p>If you must share, set explicit guardrails that map to your volume and sensitivities. The most practical controls sit in three buckets: attribution boundaries, velocity caps, and monitoring discipline.</p>
+    <ul class="checklist">
+      <li>Set a maximum daily volume per sender within the shared pool (e.g., 5–15% of the pool, depending on the distribution).</li>
+      <li>Define a clear bounce-and-complaint policy with automatic throttling if thresholds are breached.</li>
+      <li>Instrument real-time dashboards for IP reputation signals and alert on spikes in bounce/complaint rates.</li>
+    </ul>
+
+    <h2>Two-column compare: shared IPs vs dedicated IPs for transactional mail</h2>
+    <div class="compare">
+      <div class="compare-col"><div class="col-label">Before</div><p>Transactional sends share a single risk surface with other senders; you rely on luck for reputation stability.</p></div>
+      <div class="compare-col"><div class="col-label">After</div><p>Dedicated IPs provide isolation and predictable delivery, but require steady volumes and strict warmup.</p></div>
+    </div>
+
+    <hr class="divider" />
+
+    <h2>Stage-by-stage guardrail setup</h2>
+    <ol class="stages">
+      <li><div class="stage-body"><strong>Assess dependence</strong><span>Do you truly need a shared IP for transactional volumes or can you justify a dedicated IP from day one?</span></div></li>
+      <li><div class="stage-body"><strong>Define thresholds</strong><span>Document bounce rate, complaint rate, and volume thresholds with precise numbers for your segment.</span></div></li>
+      <li><div class="stage-body"><strong>Instrument monitoring</strong><span>Set up alerting and auto-throttle rules that kick in at 70% of your thresholds.</span></div></li>
+      <li><div class="stage-body"><strong>Warmup plan</strong><span>If you switch to a new IP, implement a 2–4 week ramp with controlled volumes.</span></div></li>
+    </ol>
+
+    <div class="closing">
+      <h2>The Bottom Line</h2>
+      <p>Shared IPs can be a cost and convenience, but the delivery tax on transactional emails is real. Define clear guardrails, monitor relentlessly, and either set caps within a shared pool or invest in dedicated IPs with a thoughtful warmup plan. Your customers will notice the difference in reach and reliability.</p>
+    </div>
+  </article>
+  <footer class="site-footer">Email Marketing Intelligence · Deliverability & Strategy</footer>
+</body>
+</html>
