@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Email Marketing Intelligence Guide</title>
-  <meta name="description" content="A practical guide to mastering inbox placement with data-driven tactics and clean design." />
+  <meta name="description" content="A concise, data-driven approach to improving inbox performance without gimmicks." />
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
 *{box-sizing:border-box} /* CSS injected below */
-</style>
+  </style>
 </head>
 <body>
   <header class="site-header">
@@ -22,46 +22,44 @@
     <div class="meta"><span>Email Marketing</span><span class="sep">·</span><span>7 min read</span><span class="sep">·</span><span>Guide</span></div>
   </section>
   <article class="article-wrap">
-    <p class="lead">Marketers chase open rates, but the real battleground is inbox placement. This guide breaks down actionable, measurable steps to improve deliverability while maintaining user trust and clean design.</p>
-    <img src="../images/09a24cfc3f.webp" alt="opening scene" class="article-img" />
-    <h2>The 3 Metrics That Actually Matter for Deliverability</h2>
-    <p>Open rate alone tells you little about where your email lands. Focus on inbox placement, bounces, and engagement signals that ISPs actually use to judge sender health.</p>
-    <h2>From Spam to Inbox: Designing for Deliverability</h2>
-    <p>Content and coding choices influence spam filtering more than you think. Use clean HTML, text versions, and careful image-to-text ratios to appease modern clients.</p>
-    <div class="compare">
-      <div class="compare-col"><div class="col-label">Before</div><p>Heavy image blocks and vague alt text lead to low inbox trust.</p></div>
-      <div class="compare-col"><div class="col-label">After</div><p>Balanced content, strong DKIM/SPF alignment, and clear CTAs improve placement.</p></div>
-    </div>
-    <hr class="divider" />
-    <h2>Operational Playbook</h2>
-    <ol class="stages">
-      <li><div class="stage-body"><strong>Audit domain reputation</strong><span>Check bounce rates, complaint rates, and SPF/DKIM alignment across all sending domains.</span></div></li>
-      <li><div class="stage-body"><strong>Harden authentication</strong><span>Enable DKIM, SPF, and DMARC with enforced policies and reporting.</span></div></li>
-      <li><div class="stage-body"><strong>Test rendering & accessibility</strong><span>Use alt text, accessible fonts, and test across clients.</span></div></li>
-    </ol>
+    <p class="lead" style="font-family:'Lora', serif;">A practical, no-fluff framework for boosting inbox placement using solid data and repeatable experiments. This article walks you through a crisp playbook you can apply this quarter.</p>
+    <img src="../images/placeholder-1.webp" alt="Opening scene: marketer at desk" class="article-img" />
+    <h2>1) Start with a Tight Definition of Inbox Goals</h2>
+    <p>Define what success looks like in your ESP and domain: open rate is a proxy, but your true north is conversions and revenue from email. Align metrics to business outcomes and set a ready-to-act target.</p>
+    <h2>2) Data Quality Beats Fancy Tricks</h2>
+    <p>Clean provenance, consistent timestamps, and accurate suppression lists beat any gleaming tactic. Build a simple data pipeline that records bounces, unsubscribes, and complaints with time stamps and reason codes.</p>
+    <blockquote class="pullquote">Quality data is the reason subject lines work or fail; without it, you’re guessing in the dark.</blockquote>
     <div class="callout">
       <div class="callout-label">Key Insight</div>
-      <p>Deliverability is an optimization problem, not a feature upgrade. Small, disciplined changes compound over time.</p>
+      <p>Better data hygiene reduces false positives in deliverability tests, saving you weeks of misdirected optimization.</p>
     </div>
-    <blockquote class="pullquote">The inbox is a living ecosystem—your job is to map your sender signal into that ecosystem, not overpower it.</blockquote>
-    <p>Checklist for a healthy sender profile:</p>
-    <ul class="checklist">
-      <li>Confirm SPF/DKIM/DMARC alignment across all subdomains</li>
-      <li>Clean your list with a re-engagement workflow for inactive users</li>
-      <li>Limit sending volume spikes and ensure steady cadence</li>
-    </ul>
     <div class="metrics">
-      <div class="metric-card"><div class="value">98%</div><div class="label">Inbox placement (est.)</div></div>
-      <div class="metric-card"><div class="value"><span>0</span></div><div class="label">Bounce rate (soft)</div></div>
-      <div class="metric-card"><div class="value">6x</div><div class="label">Engagement lift</div></div>
+      <div class="metric-card"><div class="value">97%</div><div class="label">Inbox placement confidence</div></div>
+      <div class="metric-card"><div class="value">0.6%</div><div class="label">Unsubscribe rate</div></div>
+      <div class="metric-card"><div class="value">8x</div><div class="label">Revenue per email</div></div>
     </div>
-    <img src="../images/c3ef41975a-20260309211155.webp" alt="analytics keyboard" class="article-img" />
-    <p>Before you press send, run a quick double-check: does your domain have DMARC reports feeding back with alignment errors? Are your images optimized for loading speed?</p>
+    <hr class="divider" />
+    <h2>3) Create a Realistic Engagement Ladder</h2>
+    <p>Move beyond open rates by focusing on click-to-open rate, conversion rate, and post-click revenue. Map each subscriber segment to a next-best action that advances them toward a goal.</p>
+    <div class="compare">
+      <div class="compare-col"><div class="col-label">Before</div><p>Broad targeting, generic copy, no staged journeys.</p></div>
+      <div class="compare-col"><div class="col-label">After</div><p>Segmented journeys with tailored offers and explicit next steps.</p></div>
+    </div>
+    <ol class="stages">
+      <li><div class="stage-body"><strong>Audit</strong><span>Capture current flows and map all touchpoints.</span></div></li>
+      <li><div class="stage-body"><strong>Plan</strong><span>Define a 6-week optimization plan with 3 experiments.</span></div></li>
+      <li><div class="stage-body"><strong>Execute</strong><span>Run tests and measure impact in real-time.</span></div></li>
+    </ol>
+    <h2>4) Tactics, Not Tricks: CSS and Rendering Resilience</h2>
+    <p>Keep rendering consistent across clients. Use plain HTML blocks with minimal CSS to reduce risk of stripping or blockers in inbox clients.</p>
+    <div class="article-img" style="height:0; padding:0; display:none;"></div>
+    <hr class="divider" />
+    <div class="pullquote">“The simplest, most reliable deliverability wins come from clean data and disciplined testing.”</div>
     <div class="closing">
       <h2>The Bottom Line</h2>
-      <p>Deliverability isn’t magic. It’s a disciplined, data-informed process that respects readers and ISPs alike.</p>
+      <p>CSS should be embedded directly in the HTML head. If you’re seeing missing styling, confirm the CSS block is present in the head and that the full CSS file content is injected on every save.</p>
     </div>
   </article>
-  <footer class="site-footer">Email Marketing Intelligence · Deliverability &amp; Strategy</footer>
+  <footer class="site-footer">Email Marketing Intelligence &nbsp;·&nbsp; Deliverability &amp; Strategy</footer>
 </body>
 </html>
