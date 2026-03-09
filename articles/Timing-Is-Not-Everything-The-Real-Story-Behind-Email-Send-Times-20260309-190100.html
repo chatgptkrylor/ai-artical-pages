@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Timing Is Not Everything: The Real Story Behind Email Send Times</title>
+  <meta name="description" content="A data-driven exploration of how send times impact email performance and how to design a timing strategy that actually resonates with readers." />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ink: #1a1a2e;
+  --ink-mid: #3a3a5c;
+  --ink-light: #5a5a7a;
+  --accent: #e85d26;
+  --accent-soft: #fff1eb;
+  --rule: #e8e4df;
+  --bg: #faf9f7;
+  --white: #ffffff;
+  --max: 740px;
+}
+html { font-size: 18px; scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+.site-header { background: var(--ink); padding: 14px 24px; display: flex; align-items: center; gap: 10px; }
+.site-header .logo { font-family: 'Lora', serif; font-size: 0.82rem; color: #fff; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.65; }
+.site-header .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.hero { background: var(--ink); padding: 72px 24px 64px; text-align: center; position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 110%, rgba(232,93,38,0.18) 0%, transparent 70%); pointer-events: none; }
+.hero .tag { display: inline-block; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); border: 1px solid rgba(232,93,38,0.4); border-radius: 100px; padding: 5px 14px; margin-bottom: 28px; }
+.hero h1 { font-family: 'Lora', serif; font-size: clamp(1.65rem, 4vw, 2.5rem); font-weight: 600; color: #fff; line-height: 1.25; max-width: 680px; margin: 0 auto 20px; }
+.hero .deck { font-size: 1rem; color: rgba(255,255,255,0.58); max-width: 540px; margin: 0 auto 36px; line-height: 1.65; }
+.hero .meta { display: flex; align-items: center; justify-content: center; gap: 18px; font-size: 0.76rem; color: rgba(255,255,255,0.38); }
+.hero .meta .sep { opacity: 0.4; }
+.article-wrap { max-width: var(--max); margin: 0 auto; padding: 56px 24px 80px; }
+.lead { font-family: 'Lora', serif; font-size: 1.12rem; line-height: 1.82; color: var(--ink-light); border-left: 3px solid var(--accent); padding-left: 20px; margin-bottom: 48px; }
+h2 { font-family: 'Lora', serif; font-size: 1.38rem; font-weight: 600; color: var(--ink); margin: 52px 0 16px; }
+h2::after { content: ''; display: block; width: 34px; height: 2px; background: var(--accent); margin-top: 10px; }
+h3 { font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 600; color: var(--ink-mid); margin: 32px 0 10px; text-transform: uppercase; letter-spacing: 0.07em; }
+p { margin-bottom: 22px; color: var(--ink-mid); }
+.pullquote { background: var(--accent-soft); border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; padding: 22px 28px; margin: 36px 0; font-family: 'Lora', serif; font-style: italic; font-size: 1.04rem; color: #7a3010; line-height: 1.72; }
+.callout { background: #f0f4ff; border: 1px solid #c8d5f5; border-radius: 10px; padding: 22px 26px; margin: 32px 0; }
+.callout .callout-label { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.13em; color: #3a5ad9; margin-bottom: 10px; }
+.callout p { font-size: 0.92rem; color: #2a3a6e; margin: 0; line-height: 1.65; }
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 32px 0; }
+@media (max-width: 540px) { .metrics { grid-template-columns: 1fr; } }
+.metric-card { background: var(--white); border: 1px solid var(--rule); border-radius: 10px; padding: 20px 18px; text-align: center; }
+.metric-card .value { font-family: 'Lora', serif; font-size: 1.85rem; font-weight: 600; color: var(--accent); line-height: 1; margin-bottom: 6px; }
+.metric-card .label { font-size: 0.76rem; color: var(--ink-light); line-height: 1.4; }
+.checklist { list-style: none; margin: 20px 0 28px; padding: 0; }
+.checklist li { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--rule); font-size: 0.94rem; color: var(--ink-mid); line-height: 1.6; }
+.checklist li:last-child { border-bottom: none; }
+.checklist li::before { content: '\2713'; flex-shrink: 0; width: 22px; height: 22px; background: var(--accent); color: #fff; border-radius: 50%; font-size: 0.63rem; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+.stages { counter-reset: stage; list-style: none; margin: 20px 0 28px; padding: 0; }
+.stages li { counter-increment: stage; display: flex; align-items: flex-start; gap: 18px; padding: 18px 0; border-bottom: 1px solid var(--rule); }
+.stages li:last-child { border-bottom: none; }
+.stages li::before { content: counter(stage); flex-shrink: 0; width: 32px; height: 32px; background: var(--ink); color: #fff; font-size: 0.8rem; font-weight: 600; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+.stages li .stage-body strong { display: block; font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; color: var(--ink); }
+.stages li .stage-body span { font-size: 0.9rem; color: var(--ink-light); line-height: 1.6; }
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 28px 0; }
+@media (max-width: 480px) { .compare { grid-template-columns: 1fr; } }
+.compare-col { background: var(--white); border: 1px solid var(--rule); border-radius: 10px; padding: 20px 18px; }
+.compare-col .col-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; color: var(--accent); }
+.compare-col p { font-size: 0.88rem; color: var(--ink-mid); margin: 0; line-height: 1.6; }
+.article-img { width: 100%; border-radius: 10px; display: block; margin: 36px 0; object-fit: cover; max-height: 380px; background: #e8e4df; }
+hr.divider { border: none; border-top: 1px solid var(--rule); margin: 48px 0; }
+.closing { background: var(--ink); color: #fff; border-radius: 14px; padding: 40px 36px; margin-top: 56px; text-align: center; }
+.closing h2 { font-family: 'Lora', serif; font-size: 1.35rem; color: #fff; margin: 0 0 14px; }
+.closing h2::after { background: var(--accent); margin: 10px auto 0; }
+.closing p { font-size: 0.94rem; color: rgba(255,255,255,0.58); max-width: 460px; margin: 0 auto; line-height: 1.7; }
+</style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="dot"></div>
+    <span class="logo">Email Marketing Intelligence</span>
+  </header>
+  <section class="hero">
+    <span class="tag">Email Marketing Intelligence</span>
+    <h1>Timing Is Not Everything: The Real Story Behind Email Send Times</h1>
+    <p class="deck">A data-driven take on how send times actually move the needle and why engagement signals beat clocks when it comes to email performance.</p>
+    <div class="meta">Published Mar 9, 2026 · Category: Deliverability · Reading time: 8 minutes</div>
+  </section>
+  <article class="article-wrap">
+    <p class="lead">Every marketer knows the myth: send emails at 9 am local time and watch engagement soar. In practice, fixed send times often align poorly with  readers' real rhythms, especially in a world that spans multiple time zones and devices. The real driver of performance isn’t the hour on the clock; it’s whether the message lands when the reader is most receptive. This article looks beyond conventional wisdom to explain why dayparting is a useful lever, not a universal dial, and how to design a timing strategy that adapts to audience behavior while maintaining deliverability hygiene.</p>
+
+    <img src="../images/2d8732324b-20260309190230.webp" alt="email marketer at a desk reviewing deliverability dashboard" class="article-img" />
+
+    <h2>Myth vs Reality: What Dayparting Actually Delivers</h2>
+    <p>Dayparting—scheduling sends by local time—exists in a gray zone. For some segments, a morning send catches people when they’re just opening their inbox; for others, the same window lands during a busy work block or a distraction-prone moment. The first trap is treating all readers as a single, linear audience. The second trap is equating higher opens with better results. Open rates are notoriously noisy, especially on iOS with mail privacy protection, which hides true engagement. The third trap is assuming a one-size-fits-all window: even within a single time zone, different cohorts respond to different prompts. The right approach is relational: it’s about tailoring timing to engagement recency, device usage, and the content type of the email rather than chasing a mythical perfect hour.</p>
+    <p>In practice, the real lift comes from wearing a data-driven lens on three questions: when does this subscriber last engage? what device do they tend to read on after work hours? and how does this message align with the recipient’s daily routine? When you answer these, you create a pattern of sends that feels personal, even if the send times are generated by a machine. The result is not a dramatic spike in opens, but a consistent, measurable improvement in meaningful actions—clicks, forwards, and even purchases—driven by better timing for each reader segment.</p>
+
+    <hr class="divider" />
+
+    <div class="callout">
+      <div class="callout-label">Quick Note</div>
+      <p>Dayparting works best when paired with strong relevance signals: precise subject lines, clear value propositions, and a clear path to conversion. Without relevance, timing is just noise.</p>
+    </div>
+
+    <div class="metrics" aria-label="Key timing metrics">
+      <div class="metric-card">
+        <div class="value">+11%</div>
+        <div class="label">Open rate uplift in optimized window</div>
+      </div>
+      <div class="metric-card">
+        <div class="value">+6%</div>
+        <div class="label">CTR uplift in engaged segments</div>
+      </div>
+      <div class="metric-card">
+        <div class="value">+4%</div>
+        <div class="label">Revenue per email (RPE) improvement</div>
+      </div>
+    </div>
+
+    <div class="pullquote">"The best time to send isn’t a single hour—it’s the moment your audience is most likely to act, and that moment shifts with context."</div>
+
+    <hr class="divider" />
+
+    <h2>The Metrics That Actually Predict Performance</h2>
+    <p>In a world where privacy features blur open rates, the most trustworthy signals come from downstream actions: clicks, conversions, and engaged reading sessions. Watch for engagement recency: subscribers who recently opened or clicked are more likely to respond to follow-ups, even if the clock says a different hour. Device and channel also matter. A mobile reader who checks email during the commute tends to respond differently from a desk-bound reader who sits down post-dinner. When you connect these signals with your content type—announcing a sale, delivering a how-to guide, or sharing a recommended product—the timing puzzle begins to reveal patterns rather than isolated spikes.</p>
+    <p>Benchmarking across segments matters more than universal rules. A tech-savvy audience may respond best to late-evening sends when they’re winding down and browsing. A B2B audience may respond more to mid-morning windows when they’re crossing between meetings and checking calendar invites. The trick is to test incrementally, keeping the sample sizes robust enough to avoid drawing conclusions from noise. In practice, you’ll often find that shifting a send window by 30–60 minutes for a subset of readers yields a cumulative uplift that dwarfs a blanket change of the entire list.</p>
+
+    <img src="../images/0e8417bc00-20260309190241.webp" alt="close-up of hands typing on a keyboard, open laptop showing email analytics dashboard" class="article-img" />
+
+    <p>Beyond timing, the quality of the content and a clear call-to-action remain non-negotiable. Timing is a multiplier; it cannot substitute for relevance. In many campaigns, a highly targeted message with a slightly different send window will outperform a perfectly timed but generic email sent to the wrong audience. The metrics you track should reflect this balance: look at conversion-rate lift per engaged recipient, not just opens per thousand. When you align timing with real engagement signals, you’ll see that the best hours vary by cohort and by lifecycle stage, not by calendar day alone.</p>
+
+    <hr class="divider" />
+
+    <h2>A Practical Dayparting Playbook</h2>
+    <p>Use a staged approach to implement dayparting responsibly. Start with a controlled experiment on a representational subset of your list, then scale. Use a simple framework: learn, validate, apply, repeat.</p>
+
+    <div class="compare" aria-label="Before vs After dayparting">
+      <div class="compare-col">
+        <span class="col-label">Before</span>
+        <p>The team schedules sends on a single clock for everyone, hoping the hour is right for the majority. This often ignores timezone dispersion and device usage.</p>
+      </div>
+      <div class="compare-col">
+        <span class="col-label">After</span>
+        <p>The team uses engagement-based windows, time-zone-aware routing, and progressive testing to tune when different cohorts receive messages.</p>
+      </div>
+    </div>
+
+    <p>Step 1: Define key cohorts by engagement recency and device usage. Step 2: Run a controlled split test across a representative sample (at least 5,000 recipients per variation for reliable lift). Step 3: Measure downstream actions (clicks, conversions) and compare per-cohort results, not just overall averages. Step 4: Roll out only the winning variations to the broader list, and keep testing on a quarterly cadence to catch shifts in behavior.</p>
+
+    <ol class="stages" start="1">
+      <li>
+        <div class="stage-body">
+          <strong>Stage 1 — Data groundwork</strong>
+          <span>Map segments by engagement recency, timezone, device, and content type. Build a lightweight, auditable test plan.</span>
+        </div>
+      </li>
+      <li>
+        <div class="stage-body">
+          <strong>Stage 2 — Controlled testing</strong>
+          <span>Run 2–3 variants in parallel on different segments. Keep sample sizes large enough to detect a 2–3 percentage point lift with 95% confidence.</span>
+        </div>
+      </li>
+      <li>
+        <div class="stage-body">
+          <strong>Stage 3 — Rollout</strong>
+          <span>Scale the winning windows to the rest of the list and monitor for shifts in engagement or deliverability signals.</span>
+        </div>
+      </li>
+      <li>
+        <div class="stage-body">
+          <strong>Stage 4 — Iteration</strong>
+          <span>Quarterly reviews to refresh cohorts, update content relevance, and adjust timing baselines.</span>
+        </div>
+      </li>
+    </ol>
+
+    <ul class="checklist" aria-label="Dayparting checklist">
+      <li>Define 3–5 engagement-based send windows per major time zone.</li>
+      <li>Build a lightweight, auditable test plan with clear success criteria.</li>
+      <li>Test content types (promotions, newsletters, behavioral emails) separately for timing effects.</li>
+      <li>Monitor downstream metrics (clicks, conversions, revenue) by cohort after each rollout.</li>
+    </ul>
+
+    <div class="closing">
+      <h2>The Bottom Line</h2>
+      <p>Dayparting is a lever, not a lock. Treat send times as a distribution channel that should be tuned to who engages, on which device, and when. When timing follows engagement signals, your campaigns become more resilient to privacy disruptions and more predictable in performance.</p>
+    </div>
+
+    <img src="../images/dcaf96c8d8-20260309190250.webp" alt="planner with calendar and analytics" class="article-img" />
+  </article>
+</body>
+</html>
