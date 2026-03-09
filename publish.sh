@@ -8,6 +8,8 @@ TITLE="${1:-Untitled}"
 FILENAME="${2:-}"
 LOG="/home/krylorix/Documents/ai-article-pages/published-articles.log"
 BASE_URL="https://chatgptkrylor.github.io/ai-artical-pages/articles"
+TOPIC_LOG="/home/krylorix/Documents/ai-article-pages/topic-history.log"
+echo "$(date '+%Y-%m-%d %H:%M') | $TITLE" >> "$TOPIC_LOG"
 
 git add -A
 git diff --cached --quiet && echo "Nothing to publish." && exit 0
