@@ -21,4 +21,7 @@ git push origin main
 if [ -n "$FILENAME" ]; then
   echo "$(date '+%Y-%m-%d %H:%M') | $TITLE | $BASE_URL/$FILENAME" >> "$LOG"
   echo "Published: $BASE_URL/$FILENAME"
+
+   # Send email alert (non-blocking)
+  python3 /home/krylorix/Documents/ai-article-pages/send_alert.py "$TITLE" "$FILENAME" 2>/dev/null || echo "Email alert failed (non-critical)"
 fi
