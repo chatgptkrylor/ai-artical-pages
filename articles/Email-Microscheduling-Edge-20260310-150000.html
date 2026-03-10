@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Email Microscheduling Edge</title>
+  <meta name="description" content="How micro-scheduling windows improve deliverability by aligning sending times with ISP heuristics." />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ink: #1a1a2e;
+  --ink-mid: #3a3a5c;
+  --ink-light: #5a5a7a;
+  --accent: #e85d26;
+  --accent-soft: #fff1eb;
+  --rule: #e8e4df;
+  --bg: #faf9f7;
+  --white: #ffffff;
+  --max: 740px;
+}
+html { font-size: 18px; scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+.site-header { background: var(--ink); padding: 14px 24px; display: flex; align-items: center; gap: 10px; }
+.site-header .logo { font-family: 'Lora', serif; font-size: 0.82rem; color: #fff; letter-spacing: 0.09em; text-transform: uppercase; opacity: 0.65; }
+.hero { background: var(--ink); padding: 72px 24px 64px; text-align: center; position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 110%, rgba(232,93,38,0.18) 0%, transparent 70%); pointer-events: none; }
+.hero .tag { display: inline-block; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); border: 1px solid rgba(232,93,38,0.4); border-radius: 100px; padding: 5px 14px; margin-bottom: 28px; }
+.hero h1 { font-family: 'Lora', serif; font-size: clamp(1.65rem, 4vw, 2.5rem); font-weight: 600; color: #fff; line-height: 1.25; max-width: 680px; margin: 0 auto 20px; }
+.hero .deck { font-size: 1rem; color: rgba(255,255,255,0.58); max-width: 540px; margin: 0 auto 36px; line-height: 1.65; }
+.hero .meta { display: flex; align-items: center; justify-content: center; gap: 18px; font-size: 0.76rem; color: rgba(255,255,255,0.38); }
+.article-wrap { max-width: var(--max); margin: 0 auto; padding: 56px 24px 80px; }
+.lead { font-family: 'Lora', serif; font-size: 1.12rem; line-height: 1.82; color: var(--ink-light); border-left: 3px solid var(--accent); padding-left: 20px; margin-bottom: 48px; }
+h2 { font-family: 'Lora', serif; font-size: 1.38rem; font-weight: 600; color: var(--ink); margin: 52px 0 16px; }
+h2::after { content: ''; display: block; width: 34px; height: 2px; background: var(--accent); margin-top: 10px; }
+h3 { font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 600; color: var(--ink-mid); margin: 32px 0 10px; text-transform: uppercase; letter-spacing: 0.07em; }
+p { margin-bottom: 22px; color: var(--ink-mid); }
+.imageorbit { width: 100%; border-radius: 10px; display: block; margin: 36px 0; object-fit: cover; max-height: 380px; background: #e8e4df; }
+hr.divider { border: none; border-top: 1px solid var(--rule); margin: 48px 0; }
+.closing { background: var(--ink); color: #fff; border-radius: 14px; padding: 40px 36px; margin-top: 56px; text-align: center; }
+.closing h2 { font-family: 'Lora', serif; font-size: 1.35rem; color: #fff; margin: 0 0 14px; }
+.closing p { font-size: 0.94rem; color: rgba(255,255,255,0.58); max-width: 460px; margin: 0 auto; line-height: 1.7; }
+.site-footer { background: var(--ink); text-align: center; padding: 24px; font-size: 0.73rem; color: rgba(255,255,255,0.28); }
+</style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="dot"></div>
+    <span class="logo">Email Marketing Intelligence</span>
+  </header>
+  <section class="hero"><span class="tag">Microscheduling</span><h1>Micro-scheduling windows: The tiny time hack that compounds deliverability</h1><p class="deck">A precise, data-driven approach to sending smaller, tightly-scoped time blocks that align with ISP behavior and engagement signals.</p><div class="meta">Live now • 1h cadence • 5% improvement promise</div></section>
+  <article class="article-wrap">
+    <p class="lead">Tiny windows, big impact. Micro-scheduling is the art of carving your sending day into a handful of micro-intervals that map to where ISPs expect new messages and how your audience behaves. If you’ve hit a wall with inbox placement after a big send, this approach can help you regain alignment with the major mailbox providers.</p>
+    <img src="../images/d858cdc04c-20260310150149.webp" alt="email marketer at desk planning deployment of a micro-schedule sending window" class="article-img" />
+    <h2>Why micro-scheduling works</h2>
+    <p>ISPs like Gmail, Outlook, and others continuously reassess incoming streams to detect bursts and adjust placement. By spreading sends across a short window and interleaving with audience activity, you stay under the threshold that triggers throttling and engagement signals that hurt your sender reputation.</p>
+
+    <h2>Designing a micro-schedule</h2>
+    <p>Pick a cadence that matches your list's engagement rhythm. For example, a 4-hour window split into two 60-minute blocks with a 120-minute gap can maintain momentum while avoiding spikes. Use historical send data to identify peak open times and thread sends around them.</p>
+
+    <img src="../images/919da5d091-20260310150157.webp" alt="team meeting with inbox analytics on screen and a calendar" class="article-img" />
+
+    <h2>Execution checklist</h2>
+    <ul class="checklist">
+      <li>Analyze past 60 days of opens and unique clicks to identify peak windows</li>
+      <li>Define 2–4 micro-interval blocks per day, with guardrails for weekend variance</li>
+      <li>Stagger send times across segments to reduce simultaneous queue pressure</li>
+      <li>Monitor deliverability metrics and adjust windows weekly</li>
+    </ul>
+
+    <div class="callout">
+      <div class="callout-label">Note</div>
+      <p>Even small shifts in send timing can yield measurable gains in inbox position when you respect user rhythms and ISP heuristics.</p>
+    </div>
+
+    <blockquote class="pullquote">"Micro-scheduling isn’t about sending less; it’s about sending smarter within the same day."</blockquote>
+
+    <h2>Two-column view: problem vs solution</h2>
+    <div class="compare">
+      <div class="compare-col">
+        <div class="col-label">Problem</div>
+        <p>Large campaigns spike the queue, trigger ISP throttling, and risk landing in the Promotions tab.</p>
+      </div>
+      <div class="compare-col">
+        <div class="col-label">Solution</div>
+        <p>Split your sends into micro-windows, cadence-aware windows, and continuous monitoring to stay in the sweet spot.</p>
+      </div>
+    </div>
+
+    <hr class="divider" />
+    <div class="closing">
+      <h2>The Bottom Line</h2>
+      <p>Micro-scheduling is a practical, scalable tweak that compounds deliverability. Start with a conservative 4-hour window and iterate weekly against your engagement data.</p>
+    </div>
+  </article>
+  <footer class="site-footer">Email Marketing Intelligence</footer>
+</body>
+</html>
