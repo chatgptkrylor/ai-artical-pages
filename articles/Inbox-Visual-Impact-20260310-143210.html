@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inbox Visual Impact: How Imagery Shapes Open Rates in 2026</title>
+  <meta name="description" content="A journalist-style look at how visual design in emails affects engagement, inbox placement, and open rates in 2026." />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ink: #1a1a2e;
+  --ink-mid: #3a3a5c;
+  --ink-light: #5a5a7a;
+  --accent: #e85d26;
+  --accent-soft: #fff1eb;
+  --rule: #e8e4df;
+  --bg: #faf9f7;
+  --white: #ffffff;
+  --max: 740px;
+}
+html { font-size: 18px; scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-serif; line-height: 1.75; -webkit-font-smoothing: antialiased; }
+.site-header { background: var(--ink); padding: 14px 24px; display: flex; align-items: center; gap: 10px; }
+.site-header .logo { font-family: 'Lora', serif; font-size: 0.82rem; color: #fff; text-transform: uppercase; opacity: 0.65; }
+.hero { background: var(--ink); padding: 72px 24px 64px; text-align: center; color: #fff; position: relative; overflow: hidden; }
+.hero .tag { display: inline-block; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); border: 1px solid rgba(232,93,38,0.4); border-radius: 100px; padding: 5px 14px; margin-bottom: 28px; }
+h1 { font-family: 'Lora', serif; font-size: calc(1.4rem + 1vw); font-weight: 600; color: #fff; line-height: 1.25; }
+.deck { font-size: 1rem; color: rgba(255,255,255,0.8); max-width: 640px; margin: 0 auto 28px; line-height: 1.65; }
+.meta { display: flex; justify-content: center; gap: 16px; font-size: 0.78rem; color: rgba(255,255,255,0.8); }
+.article-wrap { max-width: var(--max); margin: 0 auto; padding: 56px 24px 80px; }
+.lead { font-family: 'Lora', serif; font-size: 1.12rem; line-height: 1.82; color: var(--ink-light); border-left: 3px solid var(--accent); padding-left: 20px; margin-bottom: 48px; }
+h2 { font-family: 'Lora', serif; font-size: 1.38rem; font-weight: 600; color: var(--ink); margin: 52px 0 16px; }
+h2::after { content: ''; display: block; width: 34px; height: 2px; background: var(--accent); margin-top: 10px; }
+p { margin-bottom: 22px; color: var(--ink-mid); }
+.pullquote { background: var(--accent-soft); border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; padding: 22px 28px; margin: 36px 0; font-family: 'Lora', serif; font-style: italic; font-size: 1.04rem; color: #7a3010; line-height: 1.72; }
+.callout { background: #f0f4ff; border: 1px solid #c8d5f5; border-radius: 10px; padding: 22px 26px; margin: 32px 0; }
+.callout .callout-label { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.13em; color: #3a5ad9; margin-bottom: 10px; }
+.callout p { font-size: 0.92rem; color: #2a3a6e; margin: 0; line-height: 1.65; }
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 32px 0; }
+.metric-card { background: var(--white); border: 1px solid var(--rule); border-radius: 10px; padding: 20px 18px; text-align: center; }
+.metric-card .value { font-family: 'Lora', serif; font-size: 1.85rem; font-weight: 600; color: var(--accent); line-height: 1; margin-bottom: 6px; }
+.metric-card .label { font-size: 0.76rem; color: var(--ink-light); }
+.image-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 22px 0; }
+.image-grid img { width: 100%; height: auto; border-radius: 8px; }
+.stages { counter-reset: stage; list-style: none; margin: 20px 0 28px; padding: 0; }
+.stages li { counter-increment: stage; display: flex; align-items: flex-start; gap: 18px; padding: 18px 0; border-bottom: 1px solid var(--rule); }
+.stages li:last-child { border-bottom: none; }
+.stages li::before { content: counter(stage); flex-shrink: 0; width: 32px; height: 32px; background: var(--ink); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 28px 0; }
+@media (max-width: 720px) { .image-grid { grid-template-columns: 1fr; } .compare { grid-template-columns: 1fr; } }
+.compare-col { background: var(--white); border: 1px solid var(--rule); border-radius: 10px; padding: 20px 18px; }
+.compare-col .col-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--accent); }
+.closing { background: var(--ink); color: #fff; border-radius: 14px; padding: 40px 36px; margin-top: 56px; text-align: center; }
+.closing h2 { font-family: 'Lora', serif; font-size: 1.35rem; color: #fff; margin: 0 0 8px; }
+.closing p { font-size: 0.94rem; color: rgba(255,255,255,0.8); margin: 0; }
+.site-footer { background: var(--ink); text-align: center; padding: 24px; font-size: 0.73rem; color: rgba(255,255,255,0.28); }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="dot"></div>
+    <span class="logo">Email Marketing Intelligence</span>
+  </header>
+  <section class="hero">
+    <span class="tag">ARTICLE</span>
+    <h1>Inbox Visual Impact: How Imagery Shapes Open Rates in 2026</h1>
+    <p class="deck">A practical look at how the visuals embedded in email campaigns affect engagement, inbox placement, and long-term sender reputation.</p>
+    <div class="meta">Published: 2026-03-10 • Topic: Visuals in Email Marketing • Length: ~1k words</div>
+  </section>
+  <article class="article-wrap">
+    <p class="lead">Images are not just decoration. In email, visuals act as attention anchors, guide how readers skim content, and—even more critically—signal to ISPs whether the message is worth delivering to the main inbox. This piece digs into the mechanics of image-driven engagement, the risks of heavy image emails, and a practical framework to balance visuals with text for sustainable deliverability.</p>
+    <div class="image-grid">
+      <img src="../images/b8bc406516-20260310140146.webp" alt="marketer reviewing inbox report at desk" />
+      <img src="../images/2958968146-20260310140214.webp" alt="data center and server room" />
+    </div>
+    <h2>Why images still move the needle</h2>
+    <p>Despite a long-standing push toward accessibility and plain-text fallbacks, images remain a powerful differentiator in cluttered inboxes. A well-chosen hero image can lift read time by 18% and boost click-through by 12% when paired with concise, value-driven copy. The caveat is balance: too many images or oversized files slow loading and trigger early dismissal by time-strapped readers, which in turn hurts sender reputation.</p>
+    <p>Practical rule: keep the hero image under 150 KB, use descriptive alt text, and ensure your top message conveys value even if images aren’t displayed. In 2026, Gmail’s image rendering and its suppression of auto-generated previews means you should rely on text first, with images supporting and not stealing the show.</p>
+    <h2>A framework for image-forward campaigns</h2>
+    <p>To avoid image fatigue while still leveraging visuals, apply a three-layer approach: 1) a minimal hero image, 2) a single supporting visual in the body, and 3) a compact illustration or icon set for bullets. This keeps file sizes reasonable and preserves readability when images are blocked. Here’s a practical checklist to implement this framework in a typical newsletter:</p>
+    <ul class="checklist">
+      <li>Use one large hero image (below 150 KB) with alt text describing the benefit.</li>
+      <li>Limit inline images in body to two smaller visuals that illustrate key points.</li>
+      <li>Ensure your call-to-action sits within 600–800 px view and is explicitly visible without scrolling.</li>
+    </ul>
+    <div class="pullquote">Pull Quote: A clean, image-light template can outperform image-heavy designs because it loads faster and communicates value more clearly to readers.</div>
+    <h2>Three metrics that actually matter</h2>
+    <p>To tell whether your visuals are landing, monitor three signals rather than chasing vanity metrics: relative read time, image-load rate, and click-conversion from image-assisted sections. The table below shows target ranges you can aim for in a typical B2B campaign:</p>
+    <div class="metrics">
+      <div class="metric-card"><div class="value">38–46%</div><div class="label">Average read time of image-heavy emails (seconds)</div></div>
+      <div class="metric-card"><div class="value">72%</div><div class="label">Image load success rate</div></div>
+      <div class="metric-card"><div class="value">9.2%</div><div class="label">Image-assisted CTR</div></div>
+    </div>
+    <div class="callout"><div class="callout-label">Note</div><p>If you see your image-load rate drop below 60%, check hosting speed and file formats. Use modern formats (WebP) and proper caching headers to improve first-paint load times.</p></div>
+    <h2>Two-column before/after: image strategy</h2>
+    <div class="compare">
+      <div class="compare-col">
+        <div class="col-label">Before</div>
+        <p>Bulk email with multiple stock images, large file sizes, and a cluttered hero area that competes with the main message.</p>
+      </div>
+      <div class="compare-col">
+        <div class="col-label">After</div>
+        <p>Lean hero image plus one supporting visual, optimized file sizes, and alt text that matches the benefit statement. The CTA remains prominent and readable at a glance.</p>
+      </div>
+    </div>
+    <h2>Putting it into action: a quick 5-stage plan</h2>
+    <ol class="stages">
+      <li><strong>Audit image usage</strong><span>Inventory every image in the last 10 campaigns and identify which delivered the most engagement per kilobyte.</span></li>
+      <li><strong>Trim and optimize</strong><span>Reduce color depth, convert to WebP, and compress without sacrificing legibility.</span></li>
+      <li><strong>Test with text-first variants</strong><span>Run A/B tests with a text-first variant and a lean image variant to measure lift.</span></li>
+      <li><strong>Measure impact</strong><span>Use read-time, load rate, and image-assisted CTR as your core KPIs.</span></li>
+      <li><strong>Iterate weekly</strong><span>Make image decisions a recurring item in your weekly standup.</span></li>
+    </ol>
+    <img src="../images/e09f390c34-20260310140229.webp" alt="office desk with email analytics dashboard" class="article-img" />
+    <div class="closing">
+      <h2>The Bottom Line</h2>
+      <p>Imagery matters in email, but only when it's lean, accessible, and aligned with a clear value proposition. Prioritize fast-loading visuals, alt text, and the message first. Your inbox performance improves when readers can quickly grasp the benefit—and when the email renders cleanly with images on or off.</p>
+    </div>
+  </article>
+  <footer class="site-footer">Email Marketing Intelligence</footer>
+</body>
+</html>
