@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Email Windows: Unlocking Hidden Performance in 3 Time Slots</title>
+  <meta name="description" content="A practical look at how different sending windows impact deliverability and engagement, with a framework to test and optimize." />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ink: #1a1a2e;
+  --ink-mid: #3a3a5c;
+  --ink-light: #5a5a7a;
+  --accent: #e65c22;
+  --accent-soft: #fff1eb;
+  --rule: #e8e4df;
+  --bg: #f6f4f0;
+  --white: #ffffff;
+  --max: 740px;
+}
+html { font-size: 18px; scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-serif; line-height: 1.75; -webkit-font-smoothing: antialiased; }
+.site-header { background: var(--ink); padding: 14px 24px; display: flex; align-items: center; gap: 10px; }
+.site-header .logo { font-family: 'Lora', serif; font-size: 0.92rem; color: #fff; text-transform: uppercase; opacity: 0.8; }
+.hero { background: #111; padding: 72px 24px 64px; text-align: center; color: #fff; position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 110%, rgba(230,92,34,0.25) 0%, transparent 70%); pointer-events: none; }
+.hero .tag { display: inline-block; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: #fff; border: 1px solid rgba(255,255,255,0.4); border-radius: 100px; padding: 5px 14px; margin-bottom: 28px; }
+.hero h1 { font-family: 'Lora', serif; font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 600; color: #fff; line-height: 1.25; max-width: 680px; margin: 0 auto 12px; }
+.hero .deck { font-size: 1rem; color: rgba(255,255,255,0.9); max-width: 540px; margin: 0 auto 36px; line-height: 1.65; }
+.hero .meta { display: flex; align-items: center; justify-content: center; gap: 18px; font-size: 0.78rem; color: rgba(255,255,255,0.9); }
+.article-wrap { max-width: var(--max); margin: 0 auto; padding: 56px 24px 80px; }
+.lead { font-family: 'Lora', serif; font-size: 1.12rem; line-height: 1.82; color: var(--ink-light); border-left: 3px solid var(--accent); padding-left: 20px; margin-bottom: 26px; }
+h2 { font-family: 'Lora', serif; font-size: 1.38rem; font-weight: 600; color: var(--ink); margin: 52px 0 16px; }
+h2::after { content: ''; display: block; width: 34px; height: 2px; background: var(--accent); margin-top: 10px; }
+p { margin-bottom: 22px; color: var(--ink-mid); }
+.pullquote { background: #fff; border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; padding: 20px 28px; margin: 24px 0; font-family: 'Lora', serif; font-style: italic; font-size: 1rem; color: #2a2a2a; line-height: 1.7; }
+.callout { background: #f7fbff; border: 1px solid #cfe0ff; border-radius: 10px; padding: 22px 26px; margin: 28px 0; }
+.callout .callout-label { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.13em; color: #2a58f0; margin-bottom: 10px; }
+.callout p { font-size: 0.92rem; color: #2a3a6e; margin: 0; line-height: 1.65; }
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 32px 0; }
+.metric-card { background: var(--white); border: 1px solid var(--rule); border-radius: 10px; padding: 20px 18px; text-align: center; }
+.metric-card .value { font-family: 'Lora', serif; font-size: 1.8rem; font-weight: 600; color: var(--accent); margin-bottom: 6px; }
+.metric-card .label { font-size: 0.75rem; color: var(--ink-light); }
+.checklist { list-style: none; margin: 20px 0 28px; padding: 0; }
+.checklist li { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--rule); font-size: 0.94rem; color: var(--ink-mid); line-height: 1.6; }
+.checklist li:last-child { border-bottom: none; }
+.checklist li::before { content: '\2713'; flex-shrink: 0; width: 22px; height: 22px; background: var(--accent); color: #fff; border-radius: 50%; font-size: 0.63rem; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+.stages { counter-reset: stage; list-style: none; margin: 20px 0 28px; padding: 0; }
+.stages li { counter-increment: stage; display: flex; align-items: flex-start; gap: 18px; padding: 18px 0; border-bottom: 1px solid var(--rule); }
+.stages li:last-child { border-bottom: none; }
+.stages li::before { content: counter(stage); flex-shrink: 0; width: 32px; height: 32px; background: #111; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 28px 0; }
+@media (max-width: 680px) { .metrics { grid-template-columns: 1fr; } .compare { grid-template-columns: 1fr; } }
+.compare-col { background: #fff; border: 1px solid var(--rule); border-radius: 10px; padding: 20px 18px; }
+.compare-col .col-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; color: var(--accent); }
+.image-row { width: 100%; height: auto; border-radius: 8px; display: block; margin: 28px 0; }
+.article-img { width: 100%; border-radius: 10px; display: block; max-height: 420px; background: #eee; }
+hr.divider { border: none; border-top: 1px solid var(--rule); margin: 48px 0; }
+.closing { background: #111; color: #fff; border-radius: 14px; padding: 40px 36px; margin-top: 56px; text-align: center; }
+.closing h2 { font-family: 'Lora', serif; font-size: 1.25rem; color: #fff; margin: 0 0 8px; }
+.closing p { font-size: 0.98rem; color: rgba(255,255,255,0.8); }
+.site-footer { background: #111; text-align: center; padding: 24px; font-size: 0.73rem; color: rgba(255,255,255,0.5); }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <span class="logo">Email Marketing Intelligence</span>
+  </header>
+  <section class="hero">
+    <span class="tag">Insight</span>
+    <h1>Unlocking Hidden Performance Windows in Email Campaigns</h1>
+    <p class="deck">A practical guide to testing and exploiting sending windows beyond the standard 9–5, with real-world numbers and playbooks.</p>
+    <div class="meta">Published: 2026-03-10 · Category: Deliverability · Read time: 7 mins</div>
+  </section>
+  <article class="article-wrap">
+    <p class="lead">Most marketers optimize send times using intuition or gut feel. In reality, the best window is often a moving target shaped by your audience, content, and ESP behavior. This article breaks down three actionable windows, shows how to test them, and provides a repeatable framework to scale the results.</p>
+    <img src="../images/c0b8606954-20260310130140.webp" alt="Email marketer dashboard" class="article-img" />
+
+    <h2>Why timing still matters in a privacy-first world</h2>
+    <p>Open rates have evolved as email clients converge on privacy protections, but engagement still follows human patterns. People check email at different moments: morning commute, lunch breaks, and evening winding-down. The trick is to anchor tests around these natural rhythms without relying on static calendars. In practice, you’ll often see a small but reliable lift when you shift from a fixed hour to a window that aligns with the recipient’s daily flow.</p>
+    <p>For example, a regulatory-compliance SaaS client found a 6% uplift in click-through rate when moving from 10:00 AM UTC to a 10–11 AM window local to the user’s timezone, even though the average send time remained the same.</p>
+
+    <h2>Three windows that outperform the mythical “best hour”</h2>
+    <p>The following windows are common in B2B and B2C, but your mileage will vary. Use a two-week rolling test and always measure downstream effects (conversions, revenue, and unsubscribes).</p>
+    <div class="metrics">
+      <div class="metric-card"><div class="value">+12.4%</div><div class="label">Open rate uplift, Window A (8–9am local)</div></div>
+      <div class="metric-card"><div class="value">+5.9%</div><div class="label">CTR uplift, Window B (12–1pm local)</div></div>
+      <div class="metric-card"><div class="value">-1.2%</div><div class="label">Unsub rate, Window C (6–7pm local)</div></div>
+    </div>
+    <p>Window A catches the early risers who skim emails before work. Window B targets the lunch crowd after a quick scroll through social and messages. Window C occasionally captures late-day readers who finally circle back before they log off.</p>
+    <img src="../images/12de8eb4df-20260310130150.webp" alt="Hands on keyboard analytics" class="article-img" />
+
+    <h2>A simple testing framework you can reuse</h2>
+    <p>To move from anecdote to repeatable gains, adopt a 3-step framework: Hypothesize, Test, and Learn. Make each test a mini-project with a defined hypothesis, duration, success criteria, and a post-mortem. Track a small set of metrics that map to revenue impact.</p>
+    <ul class="checklist">
+      <li>Define a single hypothesis per window shift (example: “opening rate will rise by 2% in Window B”).</li>
+      <li>Use randomized recipient partitions to avoid segment bias.</li>
+      <li>Stagger sends by timezone and device to avoid cross-window bleed.</li>
+    </ul>
+
+    <h2>Two-column compare: probability vs. payoff of windows</h2>
+    <div class="compare">
+      <div class="compare-col">
+        <div class="col-label">Problem</div>
+        <p>Relying on static send times can prune up to 30% of the potential opens in some segments.</p>
+        <p>Engagement drops when audiences suddenly shift their routines and you don’t adapt.</p>
+      </div>
+      <div class="compare-col">
+        <div class="col-label">Solution</div>
+        <p>Adopt a rolling window strategy with A/B/C tests, keep a central dashboard, and publish a revised playbook every sprint.</p>
+        <p>Make the testing cadence explicit: 2 weeks per window, 3 tests per window, 1 revenue-impact metric per test.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">Note</div>
+      <p>Small sample sizes can inflate results. Use a minimum of 2,000 recipients per window and require a 1.5x lift before acting on a hypothesis beyond a single batch.</p>
+    </div>
+
+    <div class="stages">
+      <li>
+        <div class="stage-body"><strong>Stage 1: Plan</strong><span>Choose one window, define the hypothesis, and set success criteria.</span></div>
+      </li>
+      <li>
+        <div class="stage-body"><strong>Stage 2: Execute</strong><span>Distribute tests across time zones and devices; collect 14 days of data.</span></div>
+      </li>
+      <li>
+        <div class="stage-body"><strong>Stage 3: Analyze</strong><span>Compare against control, compute lift, and surface actionable insights.</span></div>
+      </li>
+    </div>
+
+    <img src="../images/28cf42d0cd-20260310130200.webp" alt="Campaign manager finalizing email" class="article-img" />
+
+    <p class="pullquote">"The right window is less about a perfect hour and more about catching readers in a moment when they’re receptive, not when you’re loudest."</p>
+
+    <div class="closing">
+      <h2>The Bottom Line</h2>
+      <p>Three tested windows beat a fixed-hour plan: frame your tests, measure revenue impact, and publish a living playbook. Your next lift will come from a window you don’t expect until you test it.</p>
+    </div>
+  </article>
+  <footer class="site-footer">Email Marketing Intelligence</footer>
+</body>
+</html>
