@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Email Deliverability Under Pressure</title>
+  <meta name="description" content="A sharp, story-driven guide to how deliverability is squeezed by timing, authentication, and policy shifts, with practical steps for engineers and marketers." />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root { --ink: #1a1a2e; --ink-mid: #3a3a5c; --ink-light: #5a5a7a; --accent: #e85d26; --accent-soft: #fff1eb; --rule: #e8e4df; --bg: #faf9f7; --white: #ffffff; --max: 740px; }
+html { font-size: 18px; scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+.site-header { background: var(--ink); padding: 14px 24px; display: flex; align-items: center; gap: 10px; }
+.site-header .logo { font-family: 'Lora', serif; font-size: 0.82rem; color: #fff; letter-spacing: 0.09em; text-transform: uppercase; opacity: 0.65; }
+.hero { background: var(--ink); padding: 72px 24px 64px; text-align: center; position: relative; overflow: hidden; }
+.hero .tag { display: inline-block; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); border: 1px solid rgba(232,93,38,0.4); border-radius: 100px; padding: 5px 14px; margin-bottom: 28px; }
+.hero h1 { font-family: 'Lora', serif; font-size: clamp(1.65rem, 4vw, 2.5rem); font-weight: 600; color: #fff; line-height: 1.25; max-width: 680px; margin: 0 auto 20px; }
+.hero .deck { font-size: 1rem; color: rgba(255,255,255,0.58); max-width: 540px; margin: 0 auto 36px; line-height: 1.65; }
+.hero .meta { display: flex; align-items: center; justify-content: center; gap: 18px; font-size: 0.76rem; color: rgba(255,255,255,0.38); }
+.article-wrap { max-width: var(--max); margin: 0 auto; padding: 56px 24px 80px; }
+.lead { font-family: 'Lora', serif; font-size: 1.12rem; line-height: 1.82; color: var(--ink-light); border-left: 3px solid var(--accent); padding-left: 20px; margin-bottom: 48px; }
+h2 { font-family: 'Lora', serif; font-size: 1.38rem; font-weight: 600; color: var(--ink); margin: 52px 0 16px; }
+h2::after { content: ''; display: block; width: 34px; height: 2px; background: var(--accent); margin-top: 10px; }
+h3 { font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 600; color: var(--ink-mid); margin: 32px 0 10px; text-transform: uppercase; letter-spacing: 0.07em; }
+p { margin-bottom: 22px; color: var(--ink-mid); }
+.pullquote { background: var(--accent-soft); border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; padding: 22px 28px; margin: 36px 0; font-family: 'Lora', serif; font-style: italic; font-size: 1.04rem; color: #7a3010; line-height: 1.72; }
+.callout { background: #f0f4ff; border: 1px solid #c8d5f5; border-radius: 10px; padding: 22px 26px; margin: 32px 0; }
+.callout .callout-label { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.13em; color: #3a5ad9; margin-bottom: 10px; }
+.callout p { font-size: 0.92rem; color: #2a3a6e; margin: 0; line-height: 1.65; }
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 32px 0; }
+@media (max-width: 540px) { .metrics { grid-template-columns: 1fr; } }
+.metric-card { background: var(--white); border: 1px solid var(--rule); border-radius: 10px; padding: 20px 18px; text-align: center; }
+.metric-card .value { font-family: 'Lora', serif; font-size: 1.85rem; font-weight: 600; color: var(--accent); line-height: 1; margin-bottom: 6px; }
+.metric-card .label { font-size: 0.76rem; color: var(--ink-light); line-height: 1.4; }
+.checklist { list-style: none; margin: 20px 0 28px; padding: 0; }
+.checklist li { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--rule); font-size: 0.94rem; color: var(--ink-mid); line-height: 1.6; }
+.checklist li:last-child { border-bottom: none; }
+.checklist li::before { content: '\2713'; flex-shrink: 0; width: 22px; height: 22px; background: var(--accent); color: #fff; border-radius: 50%; font-size: 0.63rem; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+.stages { counter-reset: stage; list-style: none; margin: 20px 0 28px; padding: 0; }
+.stages li { counter-increment: stage; display: flex; align-items: flex-start; gap: 18px; padding: 18px 0; border-bottom: 1px solid var(--rule); }
+.stages li:last-child { border-bottom: none; }
+.stages li::before { content: counter(stage); flex-shrink: 0; width: 32px; height: 32px; background: var(--ink); color: #fff; font-size: 0.8rem; font-weight: 600; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+.stages li .stage-body strong { display: block; font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; color: var(--ink); }
+.stages li .stage-body span { font-size: 0.9rem; color: var(--ink-light); line-height: 1.6; }
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 28px 0; }
+@media (max-width: 480px) { .compare { grid-template-columns: 1fr; } }
+.compare-col { background: var(--white); border: 1px solid var(--rule); border-radius: 10px; padding: 20px 18px; }
+.compare-col .col-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; color: var(--accent); }
+.compare-col p { font-size: 0.88rem; color: var(--ink-mid); margin: 0; line-height: 1.6; }
+.article-img { width: 100%; border-radius: 10px; display: block; margin: 36px 0; object-fit: cover; max-height: 380px; background: #e8e4df; }
+hr.divider { border: none; border-top: 1px solid var(--rule); margin: 48px 0; }
+.closing { background: var(--ink); color: #fff; border-radius: 14px; padding: 40px 36px; margin-top: 56px; text-align: center; }
+.closing h2 { font-family: 'Lora', serif; font-size: 1.35rem; color: #fff; margin: 0 0 14px; }
+.closing h2::after { background: var(--accent); margin: 10px auto 0; }
+.closing p { font-size: 0.94rem; color: rgba(255,255,255,0.58); max-width: 460px; margin: 0 auto; line-height: 1.7; }
+.site-footer { background: var(--ink); text-align: center; padding: 24px; font-size: 0.73rem; color: rgba(255,255,255,0.28); }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="dot"></div>
+    <span class="logo">Email Marketing Intelligence</span>
+  </header>
+  <section class="hero">
+    <span class="tag">SURVIVAL GUIDE</span>
+    <h1>Email Deliverability Under Pressure: A Pragmatic Playbook</h1>
+    <p class="deck">When timing, authentication, and policy shifts collide, engineers and marketers must align to keep inboxes open. This article stitches practical steps into a narrative you can actually implement.</p>
+    <div class="meta"><span>EST. 7 min read</span><span class="sep">|</span><span>Mode: practical</span></div>
+  </section>
+  <article class="article-wrap">
+    <p class="lead">Deliverability is not a set of rules you memorize; it’s a moving target that shifts with SPF lookups, DMARC alignment, and how ISPs weigh engagement signals. The goal is simple: keep messages trustworthy, scannable, and timely.</p>
+    <img src="../images/726bd64283-20260310070927.webp" alt="email marketer reviewing inbox rendering in dark mode on laptop at bright desk" class="article-img" />
+    <h2>1) Start with authentication as a default assumption</h2>
+    <p>The first line of defense is a rock-solid authentication stack. SPF, DKIM, and DMARC aren’t decoration—they’re the reputation infrastructure ISPs check in milliseconds. A breach in any of them is an invitation to soft or hard bounces. Build a policy that makes authentication automatic for every sending domain: rotate keys every 90 days, publish DMARC with a policy of quarantine or reject for non-aligned sources, and maintain a centralized certificate store that surfaces misconfigurations before sending. A practical approach is to test DMARC alignment using real-world send paths and ensure ARC remains intact when traversing intermediaries.</p>
+    <h2>2) Time the send with surgical precision</h2>
+    <p>Publishers often see a sharp drop in engagement when you blast on the hour. Use historical data to pick a window where open rates are strongest, but beware of reputation-driven timing: ISPs throttle volumes during peak times and reward consistent sending patterns. A 30-minute window rather than a single hour can smooth out spikes, reducing last-minute spikes that trigger throttling or bounces. Maintain a rolling schedule and document the reasoning behind it so teams don’t regress in a future change.</p>
+    <h2>3) Build a DMARC-first routing mindset</h2>
+    <p>DMARC is not a compliance checkbox; it’s a routing tool. If you align SPF and DKIM with DMARC, you minimize mailbox provider confusion and speed up legitimate message delivery. The article’s core idea is to treat DMARC as the default routing policy: require p=reject for non-aligned sources, collect DMARC reports to identify misconfigurations, and use a dashboard to surface failures in near real-time. This reduces the risk of spoofing and improves overall trust signals for inbox providers.</p>
+    <img src="../images/df8fd10aaa-20260310070937.webp" alt="team planning an email deliverability strategy around SPF/DKIM/DMARC on whiteboard" class="article-img" />
+    <h2>4) The cost of purchased lists and stale engagement</h2>
+    <p>Purchased lists are a trap that looks tempting but ultimately erode deliverability. ISPs treat purchased recipients as suspicious behavior, and engagement metrics become noisy when a third party sends on your behalf. The safe path is to focus on opt-in growth and re-engagement campaigns that preserve deliverability without trading trust for scale. When in doubt, run a small, tightly controlled pilot to measure the impact on metrics like spam trap hits and bounce rates before a full rollout.</p>
+    <h2>5) The aftershocks: open rates, clicks, and conversions</h2>
+    <p>Apple MPP and privacy changes have reshaped how we measure impact. Open rates are less reliable; instead, track click-through, conversions, and revenue per email. Build a composite metric that includes engagement recency and recipient quality signals. The most important takeaway: deliverability is a product, not a single metric. It’s the combination of authentication, timing, and audience health that keeps inboxes open.</p>
+    <div class="metrics">
+      <div class="metric-card"><div class="value">78%</div><div class="label">DMARC alignment rate</div></div>
+      <div class="metric-card"><div class="value">2.3x</div><div class="label">Open-rate bump when timing optimized</div></div>
+      <div class="metric-card"><div class="value">1.6x</div><div class="label">Conversion lift from better auth</div></div>
+    </div>
+    <hr class="divider" />
+    <div class="callout">
+      <div class="callout-label">Note</div>
+      <p>Authentication is not a one-and-done task. Schedule quarterly audits, automated DMARC reports, and a rotating key policy to keep you ahead of spoofing attempts.</p>
+    </div>
+    <ul class="checklist">
+      <li>Audit SPF/DKIM for all sending subdomains</li>
+      <li>Publish a strict DMARC policy with 90-day key rotation</li>
+      <li>Set a 15-minute window for major sends to avoid spike throttling</li>
+    </ul>
+    <ol class="stages">
+      <li><div class="stage-body"><strong>Stage 1</strong><span>Audit and map all domains and sending IPs.</span></div></li>
+      <li><div class="stage-body"><strong>Stage 2</strong><span>Publish DMARC with aggregate and forensic reports.</span></div></li>
+      <li><div class="stage-body"><strong>Stage 3</strong><span>Implement arc handling and monitor for alignment.</span></div></li>
+    </ol>
+    <div class="compare">
+      <div class="compare-col">
+        <div class="col-label">Problem</div>
+        <p>Without authentication-first routing, legitimate messages get delayed or blocked during ISP checks.</p>
+      </div>
+      <div class="compare-col">
+        <div class="col-label">Solution</div>
+        <p>Adopt DMARC-first routing, enforce strict SPF/DKIM, and monitor with a real-time dashboard.</p>
+      </div>
+    </div>
+    <img src="../images/354c309aa9-20260310070946.webp" alt="comparison: traditional sending vs authentication-first strategy with DMARC dashboards" class="article-img" />
+    <p>In practice, timing and authentication are two levers you pull together. The old model—send at scale and hope for deliverability—is finally dead. The new model is a disciplined, data-driven workflow that treats deliverability as a core product, not a magical outcome.</p>
+    <hr class="divider" />
+    <div class="closing">
+      <h2>The Bottom Line</h2>
+      <p>Deliverability under pressure demands an authentication-first mindset, precise timing, and ongoing governance. Start small, measure rigorously, and progressively tighten controls to keep inboxes open and conversions flowing.</p>
+    </div>
+  </article>
+  <footer class="site-footer">Email Marketing Intelligence</footer>
+  <script>/* no scripts needed */</script>
+</body>
+</html>
