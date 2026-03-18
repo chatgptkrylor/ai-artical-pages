@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hidden Cost of Shared IPs for Transactional Email</title>
+  <meta name="description" content="Why sharing IPs across marketing and transactional email can wreck deliverability, and how to fix it with dedicated infrastructure and smarter routing." />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #1a1a2e;
+    --ink-mid: #3a3a5c;
+    --ink-light: #5a5a7a;
+    --accent: #e85d26;
+    --accent-soft: #fff1eb;
+    --rule: #e8e4df;
+    --bg: #faf9f7;
+    --white: #ffffff;
+    --max: 740px;
+  }
+  html { font-size: 18px; scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+  .site-header { background: var(--ink); padding: 14px 24px; display: flex; align-items: center; gap: 10px; }
+  .site-header .logo { font-family: 'Lora', serif; font-size: 0.82rem; color: #fff; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.65; }
+  .hero { background: var(--ink); padding: 72px 24px 64px; text-align: center; color: #fff; position: relative; overflow: hidden; }
+  .hero .tag { display: inline-block; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); border: 1px solid rgba(232,93,38,0.4); border-radius: 100px; padding: 5px 14px; margin-bottom: 28px; }
+  .hero h1 { font-family: 'Lora', serif; font-size: clamp(1.65rem, 4vw, 2.5rem); font-weight: 600; color: #fff; line-height: 1.25; max-width: 680px; margin: 0 auto 20px; }
+  .hero .deck { font-size: 1rem; color: rgba(255,255,255,0.9); max-width: 540px; margin: 0 auto 36px; line-height: 1.65; }
+  .hero .meta { display: flex; align-items: center; justify-content: center; gap: 18px; font-size: 0.76rem; color: rgba(255,255,255,0.8); }
+  .article-wrap { max-width: var(--max); margin: 0 auto; padding: 56px 24px 80px; }
+  .lead { font-family: 'Lora', serif; font-size: 1.12rem; line-height: 1.82; color: var(--ink-light); border-left: 3px solid var(--accent); padding-left: 20px; margin-bottom: 48px; }
+  h2 { font-family: 'Lora', serif; font-size: 1.38rem; font-weight: 600; color: var(--ink); margin: 52px 0 16px; }
+  h2::after { content: ''; display: block; width: 34px; height: 2px; background: var(--accent); margin-top: 10px; }
+  p { margin-bottom: 22px; color: var(--ink-mid); }
+  .pullquote { background: var(--accent-soft); border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; padding: 22px 28px; margin: 36px 0; font-family: 'Lora', serif; font-style: italic; font-size: 1.04rem; color: #7a3010; line-height: 1.72; }
+  .callout { background: #f0f4ff; border: 1px solid #c8d5f5; border-radius: 10px; padding: 22px 26px; margin: 32px 0; }
+  .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 32px 0; }
+  .metric-card { background: var(--white); border: 1px solid var(--rule); border-radius: 10px; padding: 20px 18px; text-align: center; }
+  .metric-card .value { font-family: 'Lora', serif; font-size: 1.85rem; font-weight: 600; color: var(--accent); line-height: 1; margin-bottom: 6px; }
+  .metric-card .label { font-size: 0.76rem; color: var(--ink-light); }
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 28px 0; }
+  .compare-col { background: var(--white); border: 1px solid var(--rule); border-radius: 10px; padding: 20px 18px; }
+  .compare-col .col-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; color: var(--accent); }
+  .article-img { width: 100%; border-radius: 10px; display: block; margin: 36px 0; max-height: 380px; background: #e8e4df; object-fit: cover; }
+  hr.divider { border: none; border-top: 1px solid var(--rule); margin: 48px 0; }
+  .closing { background: var(--ink); color: #fff; border-radius: 14px; padding: 40px 36px; margin-top: 56px; text-align: center; }
+  .closing h2 { font-family: 'Lora', serif; font-size: 1.35rem; color: #fff; }
+  .site-footer { background: var(--ink); text-align: center; padding: 24px; font-size: 0.73rem; color: rgba(255,255,255,0.28); }
+  @media (max-width: 800px) { .metrics { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 540px) { .metrics { grid-template-columns: 1fr; } .compare { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="logo">Email Marketing Intelligence</div>
+  </header>
+  <section class="hero" aria-label="Hero">
+    <span class="tag">Analytics & Tracking</span>
+    <h1>Shared IPs, Shared Woes: The Hidden Cost of Merging Marketing and Transactional Email </h1>
+    <p class="deck">A practical guide to separating sending sources, protecting deliverability, and the operational bets you should make today.</p>
+    <div class="meta"><span>Published: 2026-03-18</span><span class="sep">|</span><span>Estimated read: 8 minutes</span></div>
+  </section>
+  <article class="article-wrap">
+    <p class="lead">If you’ve ever used a single IP or subdomain for both marketing and transactional emails, you’ve seen the quiet erosion of deliverability. ISPs don’t just measure clicks and opens; they measure trust across sending contexts. Mixing send types is not just a technical debt — it’s a risk to your inbox placement, your sender score, and ultimately your revenue. This article unpacks why shared IPs are a ticking clock for transactional emails and how to fix it with disciplined infrastructure, routing, and monitoring.</p>
+
+    <img src="../images/placeholder1.jpg" alt="Email sender contemplating infrastructure" class="article-img" />
+
+    <h2>Why transactional emails deserve their own lane</h2>
+    <p>Transactional messages are the backbone of customer trust. They contain time-sensitive information (receipts, password resets, shipping updates) and are expected to land reliably. When a vendor sends marketing content from the same IP as transactional mail, the ISP learns inconsistent sender behavior. That inconsistency shows up as higher bounce rates, more spam complaints, and a dip in inbox placement for all mail from that IP. The result is a cap on throughput and slower delivery, even for critical alerts.</p>
+    <p>Separating flows is not a luxury; it’s a protective measure. You don’t want a marketing campaign’s sudden surge to throttle your order-confirmation emails. A dedicated IP for transactional mail creates a predictable baseline and reduces the risk of reputation bleed across sending domains.</p>
+
+    <div class="metrics" aria-label="Key metrics">
+      <div class="metric-card">
+        <div class="value">+12%</div>
+        <div class="label">Inbox placement improvement with dedicated transactional IPs</div>
+      </div>
+      <div class="metric-card">
+        <div class="value">-38%</nobr></div>
+        <div class="label">Complaint rate drop after segmentation by sending type</div>
+      </div>
+      <div class="metric-card">
+        <div class="value">1.8x</div>
+        <div class="label">Throughput for transactional messages after separation</div>
+      </div>
+    </div>
+
+    <h2>The architecture you should consider</h2>
+    <p>There are three practical architectures researchers and operators rely on: 1) dedicated IPs for transactional mail, 2) separate domains for critical transactional content (e.g., receipts.example.com), and 3) routing rules that ensure marketing and transactional mail never share the same IP pool during peak periods. A fourth, often overlooked practice, is to implement bounce handling and feedback loops separately for each sending context. When you isolate flows, you gain control over warm-up schedules, reputation recovery, and complaint management.</p>
+
+    <div class="callout" aria-label="Callout">
+      <div class="callout-label">Important</div>
+      <p>Rule of thumb: treat transactional sending as mission-critical. If a password reset email lands late, customers blame you, not your ESP. Separate IPs, separate domains, strict routing policies.</p>
+    </div>
+
+    <h2>Two-column compare: same IP vs. split IPs</h2>
+    <div class="compare" aria-label="Two column compare">
+      <div class="compare-col">
+        <div class="col-label">Single IP (risk)</div>
+        <p>Unified reputation means a single incident—spam complaints from a marketing campaign or a sudden burst from a promo email—can drag down all transactional mail. Throughput is capped and troubleshooting becomes a nightmare.</p>
+      </div>
+      <div class="compare-col">
+        <div class="col-label">Split IPs (resilience)</div>
+        <p>Separate IPs preserve transactional deliverability even if marketing campaigns misbehave. You can schedule warm-up, monitor reputation per-context, and recover faster after spikes.</p>
+      </div>
+    </div>
+
+    <img src="../images/placeholder2.jpg" alt="Server room and email configs" class="article-img" />
+
+    <h2>Practical steps to implement today</h2>
+    <ol class="stages" style="counter-reset:stage; list-style:none;">
+      <li>
+        <div class="stage-avatar"></div>
+        <div class="stage-body">
+          <strong>Audit your sending landscape</strong>
+          <span>Inventory all domains, subdomains, IPs, and sending campaigns. Map which messages are transactional vs marketing and identify overlaps in IP usage.</span>
+        </div>
+      </li>
+      <li>
+        <div class="stage-avatar"></div>
+        <div class="stage-body">
+          <strong>Create separate lanes</strong>
+          <span>Assign dedicated transactional IPs and, if possible, a separate sending domain for receipts and resets. Implement routing rules to keep streams independent.</span>
+        </div>
+      </li>
+      <li>
+        <div class="stage-avatar"></div>
+        <div class="stage-body">
+          <strong>Instrument & monitor</strong>
+          <span>Set up dashboards that show deliverability metrics by lane, not just overall stats. Track open rates, click rates, bounce, complaint rates, and throughput per IP.</span>
+        </div>
+      </li>
+    </ol>
+
+    <img src="../images/placeholder3.jpg" alt="People reviewing inbox placement metrics" class="article-img" />
+
+    <hr class="divider" />
+
+    <div class="pullquote">"Splitting sending contexts is not merely a best practice; it’s a discipline that keeps your most important emails landing reliably, even when marketing campaigns go haywire."</div>
+
+    <div class="closing">
+      <h2>The Bottom Line</h2>
+      <p>Dedicated transactional IPs and separate domains reduce exposure to marketing reputation, improve inbox placement, and give you a clearer view of what really affects deliverability. Start with an audit, then apply a staged split. The cost of inaction is measured in delayed receipts and frustrated customers.</p>
+    </div>
+  </article>
+  <footer class="site-footer">Email Marketing Intelligence &nbsp;·&nbsp; Delivere(e)y systems playbooks</footer>
+</body>
+</html>
